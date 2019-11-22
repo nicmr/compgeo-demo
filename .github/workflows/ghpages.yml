@@ -31,3 +31,5 @@ jobs:
         build_dir: static
         # Commit message
         commit_message: Github actions deployment to Github pages
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
