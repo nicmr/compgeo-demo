@@ -32,4 +32,4 @@ jobs:
         # Commit message
         commit_message: Github actions deployment to Github pages
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
