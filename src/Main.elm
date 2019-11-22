@@ -77,7 +77,7 @@ centerY = height / 2
 view : Model -> Html Msg
 view model =
     div [ style "display" "flex"
-        , style "justify-content" "flex-start"
+        , style "justify-content" "center"
         , style "flex-direction" "row"
         ]
         [ div
@@ -89,11 +89,13 @@ view model =
             , Html.button [onClick DrawHull] [text "Draw convex hull"]
             ]
         , div
-            [
+            [ style "display" "flex"
+            , style "justify-content" "center"
+            , style "align-items" "flex-start"
             ]
             [ Canvas.toHtml
-                (width, height )
-                [style "border" "10px solid rgba(0,0,0,0.1)" ]
+                ( width, height )
+                [ style "border" "10px solid rgba(0,0,0,0.1)" ]
                 [ clearScreen
                 , renderConvexExample model.points model.draw_hull
                 ]
@@ -135,7 +137,7 @@ renderConvexExample points draw_hull =
                         Just hull -> hull :: circles
                         Nothing -> circles
                 )
-                |> shapes []
+                |> shapes [fill (Color.hsl (200/360) 0.6 0.65)]
 
 
 vecsToPath: List Math.Vector2.Vec2 -> Maybe Canvas.Shape
