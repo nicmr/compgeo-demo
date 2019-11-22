@@ -52,6 +52,7 @@ update msg model =
             ({model | draw_hull = True}, Cmd.none)
 
 
+-- random point generators
 randomPoint: Random.Generator Point
 randomPoint =
     let
@@ -66,6 +67,8 @@ randomPointList length =
     Random.list length randomPoint
 
 
+
+-- view and view constants
 width = 400
 height = 400
 
@@ -82,7 +85,7 @@ view model =
         ]
         [ div
             [style "display" "flex"
-            -- , style "justify-content" "flex-start"
+            , style "justify-content" "flex-start"
             , style "flex-direction" "column"
             ]
             [ Html.button [onClick NewPoints] [text "Generate new points"]
@@ -100,20 +103,10 @@ view model =
                 , renderConvexExample model.points model.draw_hull
                 ]
             ]
-        -- , div
-        --     [ style "display" "flex"
-        --     , style "justify-content" "center"
-        --     , style "align-items" "flex-start"
-        --     ]
-        --     [ Canvas.toHtml
-        --         ( width, height )
-        --         [ style "border" "10px solid rgba(0,0,0,0.1)" ]
-        --         [ clearScreen
-        --         , render model.count
-        --         ]
-        --     ]
         ]
     
+
+-- canvas render functions and helpers
 
 clearScreen =
     shapes [ fill Color.white ] [ rect ( 0, 0 ) width height ]
@@ -148,20 +141,4 @@ vecsToPath vecs =
         (x::xs) -> Just <| Canvas.path (getX x, getY x) <| List.map(\a -> Canvas.lineTo (getX a, getY a)) xs
 
 
-render count =
-    let
-        size = width / 3
-        x = -(size / 2)
-        y = -(size / 2)
-        rotation = degrees (count * 3)
-        hue =
-            toFloat (count / 4 |> floor |> modBy 100) / 100
-    in
-        shapes
-            [ transform
-                [ translate centerX centerY
-                , rotate rotation
-                ]
-            , fill (Color.hsl hue 0.3 0.7)
-            ]
-            [ rect ( x, y ) size size ]
+    
