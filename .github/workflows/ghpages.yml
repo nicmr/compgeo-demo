@@ -1,0 +1,29 @@
+name: Github pages deployment
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Setup Elm environment
+      uses: JorelAli/setup-elm@v1
+      with:
+        elm-version: 0.19.1
+    
+    - name: Compile elm source files
+      run: elm make --output=./static/elm.js src/Main.elm
+        
+    - name: GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v1.2.4
+      with:
+        # Git branch where assets will be deployed
+        target_branch: gh-pages # optional, default is gh-pages
+        # Build directory to deploy
+        build_dir: static
+        # Commit message
+        commit_message: Github actions deployment to Github pages
