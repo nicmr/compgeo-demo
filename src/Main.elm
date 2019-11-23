@@ -72,11 +72,6 @@ randomPointList length =
 width = 400
 height = 400
 
-
-centerX = width / 2
-centerY = height / 2
-
-
 view : Model -> Html Msg
 view model =
     div [ style "display" "flex"
