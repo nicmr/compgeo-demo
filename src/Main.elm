@@ -15,16 +15,17 @@ import Random
 type alias Point = (Float, Float)
 
 
-type Examples = ExConvex | ExTriangulation
+type Example = ExConvex | ExTriangulation
 
 
 type alias Model =
     { convexModel : ConvexExample.Model
+    , active: Example
     }
 
 
 type Msg
-    = ConvexMsg ConvexExample.Msg
+    = ConvexMsg ConvexExample.Msg | SwitchTo Example
 
 
 main : Program () Model Msg
@@ -39,7 +40,7 @@ main =
 
 init : () -> (Model, Cmd Msg)
 init _ =
-    ( { convexModel = ConvexExample.init }
+    ( { convexModel = ConvexExample.init , active = ExConvex}
     , Cmd.none
     )
 
@@ -53,6 +54,9 @@ update msg model =
             in
                 ({model | convexModel = newConvexModel}, Cmd.map ConvexMsg convexCmd)
 
+        SwitchTo example ->
+            ({ model | active = example}, Cmd.none)
+
 
 -- view and view constants
 
@@ -62,31 +66,45 @@ height = 400
 
 view : Model -> Html Msg
 view model =
-    div [ style "display" "flex"
-        , style "justify-content" "center"
-        , style "flex-direction" "row"
-        ]
-        [ div
-            [style "display" "flex"
-            , style "justify-content" "flex-start"
-            , style "flex-direction" "column"
-            ]
-            [ Html.button [onClick (ConvexMsg ConvexExample.NewPoints)] [text "Generate new points"]
-            , Html.button [onClick (ConvexMsg ConvexExample.DrawHull)] [text "Draw convex hull"]
-            ]
-        , div
-            [ style "display" "flex"
+    let
+        activeView =
+            case model.active of
+                ExConvex ->
+                    [ div
+                        [style "display" "flex"
+                        , style "justify-content" "flex-start"
+                        , style "flex-direction" "column"
+                        ]
+                        [ Html.button [onClick (ConvexMsg ConvexExample.NewPoints)] [text "Generate new points"]
+                        , Html.button [onClick (ConvexMsg ConvexExample.DrawHull)] [text "Draw convex hull"]
+                        ]
+                    , div
+                        [ style "display" "flex"
+                        , style "justify-content" "center"
+                        , style "align-items" "flex-start"
+                        ]
+                        [ Canvas.toHtml
+                            ( width, height )
+                            [ style "border" "10px solid rgba(0,0,0,0.1)" ]
+                            [ clearScreen
+                            , ConvexExample.render model.convexModel.points model.convexModel.draw_hull
+                            ]
+                        ]
+                    ]
+                ExTriangulation -> []
+    in
+        div [ style "display" "flex"
             , style "justify-content" "center"
-            , style "align-items" "flex-start"
+            , style "flex-direction" "row"
             ]
-            [ Canvas.toHtml
-                ( width, height )
-                [ style "border" "10px solid rgba(0,0,0,0.1)" ]
-                [ clearScreen
-                , ConvexExample.render model.convexModel.points model.convexModel.draw_hull
+            
+            (List.append activeView
+                [ div []
+                    [ Html.button [onClick (SwitchTo ExTriangulation)] [text "Switch to ExTriangulation example"]
+                    , Html.button [onClick (SwitchTo ExConvex)] [text "Switch to ExConvex example"]
+                    ]
                 ]
-            ]
-        ]
+            )
     
 
 -- canvas render functions and helpers
