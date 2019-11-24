@@ -1,15 +1,11 @@
 module Main exposing (main)
 
 import Browser
-import Canvas exposing (rect, shapes)
-import Canvas.Settings exposing (fill)
-import Color
 import Html exposing (Html, div, text)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style)
-import ConvexExample
 
-import Random
+import ConvexExample
 
 
 type alias Point = (Float, Float)
@@ -92,9 +88,3 @@ view model =
                 , Html.button [onClick (SwitchTo ExConvex)] [text "Switch to ExConvex example"]
                 ]
             ])
-    
-
--- canvas render functions and helpers
-
-clearScreen =
-    shapes [ fill Color.white ] [ rect ( 0, 0 ) width height ]

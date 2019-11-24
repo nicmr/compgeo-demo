@@ -1,17 +1,16 @@
-module ConvexExample exposing (Model, Msg(..), init, update, render, view)
-
-import Random
-import Canvas
-import Canvas.Settings
-import Color
+module ConvexExample exposing (Model, Msg(..), init, update, view)
 
 import Html exposing (Html, div, text)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style)
 
+import Canvas
+import Canvas.Settings
+import Color
+
+import Random
+
 import Math.Vector2 exposing (Vec2, vec2, getX, getY)
-
-
 import Convex
 
 
