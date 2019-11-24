@@ -1,9 +1,13 @@
-module ConvexExample exposing (Model, Msg(..), init, update, render)
+module ConvexExample exposing (Model, Msg(..), init, update, render, view)
 
 import Random
 import Canvas
 import Canvas.Settings
 import Color
+
+import Html exposing (Html, div, text)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (style)
 
 import Math.Vector2 exposing (Vec2, vec2, getX, getY)
 
@@ -45,21 +49,36 @@ update msg model =
         DrawHull ->
             ({model | draw_hull = True}, Cmd.none)
 
+-- view
 
--- random point generators
-
-randomPoint: Random.Generator Point
-randomPoint =
-    let
-        max_w = width-1
-        max_h = height-1
-    in
-      Random.map2(\x y -> (x, y)) (Random.float 1 max_w) (Random.float 1 max_h)
-
-
-randomPointList : Int -> Random.Generator (List Point)
-randomPointList length =
-    Random.list length randomPoint
+view : Model -> Html Msg
+view model =
+    div
+    [ style "display" "flex"
+    , style "justify-content" "center"
+    , style "align-items" "flex-start"
+    ]
+    [ div
+        [ style "display" "flex"
+        , style "justify-content" "flex-start"
+        , style "flex-direction" "column"
+        ]
+        [ Html.button [onClick NewPoints] [text "Generate new points"]
+        , Html.button [onClick DrawHull] [text "Draw convex hull"]
+        ]
+    , div
+        [ style "display" "flex"
+        , style "justify-content" "center"
+        , style "align-items" "flex-start"
+        ]
+        [ Canvas.toHtml
+            ( width, height )
+            [ style "border" "10px solid rgba(0,0,0,0.1)" ]
+            [ clearScreen
+            , render model.points model.draw_hull
+            ]
+        ]
+    ]
 
 
 -- canvas render functions and helpers
@@ -91,3 +110,24 @@ vecsToPath vecs =
         [] -> Nothing
         [x] -> Just <| Canvas.path (getX x, getY x) []
         (x::xs) -> Just <| Canvas.path (getX x, getY x) <| List.map(\a -> Canvas.lineTo (getX a, getY a)) xs
+
+
+-- random point generators
+
+randomPoint: Random.Generator Point
+randomPoint =
+    let
+        max_w = width-1
+        max_h = height-1
+    in
+      Random.map2(\x y -> (x, y)) (Random.float 1 max_w) (Random.float 1 max_h)
+
+
+randomPointList : Int -> Random.Generator (List Point)
+randomPointList length =
+    Random.list length randomPoint
+
+
+
+clearScreen =
+    Canvas.shapes [ Canvas.Settings.fill Color.white ] [ Canvas.rect ( 0, 0 ) width height ]

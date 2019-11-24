@@ -27,6 +27,10 @@ type alias Model =
 type Msg
     = ConvexMsg ConvexExample.Msg | SwitchTo Example
 
+mapConvexMsg : ConvexExample.Msg -> Msg
+mapConvexMsg msg =
+    ConvexMsg msg
+
 
 main : Program () Model Msg
 main =
@@ -69,42 +73,25 @@ view model =
     let
         activeView =
             case model.active of
-                ExConvex ->
-                    [ div
-                        [style "display" "flex"
-                        , style "justify-content" "flex-start"
-                        , style "flex-direction" "column"
-                        ]
-                        [ Html.button [onClick (ConvexMsg ConvexExample.NewPoints)] [text "Generate new points"]
-                        , Html.button [onClick (ConvexMsg ConvexExample.DrawHull)] [text "Draw convex hull"]
-                        ]
-                    , div
-                        [ style "display" "flex"
-                        , style "justify-content" "center"
-                        , style "align-items" "flex-start"
-                        ]
-                        [ Canvas.toHtml
-                            ( width, height )
-                            [ style "border" "10px solid rgba(0,0,0,0.1)" ]
-                            [ clearScreen
-                            , ConvexExample.render model.convexModel.points model.convexModel.draw_hull
-                            ]
-                        ]
-                    ]
-                ExTriangulation -> []
+                ExConvex -> ConvexExample.view model.convexModel |> Html.map mapConvexMsg
+                    
+                ExTriangulation -> div [] []
     in
         div [ style "display" "flex"
             , style "justify-content" "center"
             , style "flex-direction" "row"
             ]
             
-            (List.append activeView
-                [ div []
-                    [ Html.button [onClick (SwitchTo ExTriangulation)] [text "Switch to ExTriangulation example"]
-                    , Html.button [onClick (SwitchTo ExConvex)] [text "Switch to ExConvex example"]
-                    ]
+            (activeView ::
+            [ div 
+                [ style "display" "flex"
+                , style "justify-content" "flex-start"
+                , style "flex-direction" "column"
                 ]
-            )
+                [ Html.button [onClick (SwitchTo ExTriangulation)] [text "Switch to ExTriangulation example"]
+                , Html.button [onClick (SwitchTo ExConvex)] [text "Switch to ExConvex example"]
+                ]
+            ])
     
 
 -- canvas render functions and helpers
