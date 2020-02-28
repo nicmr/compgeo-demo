@@ -13,7 +13,7 @@
             "elm/random": "1.0.0",
             "elm-explorations/linear-algebra": "1.0.3",
             "joakin/elm-canvas": "4.0.1",
-            "nicmr/compgeo": "1.0.0"
+            "nicmr/compgeo": "1.0.3"
         },
         "indirect": {
             "elm/json": "1.1.3",
