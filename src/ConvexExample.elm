@@ -88,19 +88,20 @@ render points draw_hull =
         size = width / 3
         circles = List.map (\(x,y) -> Canvas.circle (x,y) (size/50) ) points
     in
-        case draw_hull of
-            False ->
-                Canvas.shapes [] circles
-            True ->
-                List.map (\(x,y) -> vec2 x y) points
-                |> Convex.convexHull
-                |> vecsToPath
-                |> (\maybeHull ->
-                    case maybeHull of
-                        Just hull -> hull :: circles
-                        Nothing -> circles
-                )
-                |> Canvas.shapes [Canvas.Settings.fill (Color.hsl (200/360) 0.6 0.65)]
+        if draw_hull then
+            List.map (\(x,y) -> vec2 x y) points
+            |> Convex.convexHull
+            |> vecsToPath
+            |> (\maybeHull ->
+                case maybeHull of
+                    Just hull -> hull :: circles
+                    Nothing -> circles
+            )
+            |> Canvas.shapes [Canvas.Settings.fill (Color.rgb255 168 95 117 )]
+            -- |> Canvas.shapes [Canvas.Settings.fill (Color.hsl (200/360) 0.6 0.65)]
+                -- #A85F75
+        else
+            Canvas.shapes [] circles
 
 
 vecsToPath: List Math.Vector2.Vec2 -> Maybe Canvas.Shape

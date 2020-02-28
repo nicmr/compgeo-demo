@@ -1,0 +1,68 @@
+/* body,
+div:first-child {
+    margin: 0;
+    height: 100vh;
+} */
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+:root {
+    /* --colorBackground: #A0D1DB; */
+    --colorBackground: #99C8D1;
+
+    --colorUI: #99C8D1;
+    --colorUIActive: #408F99;
+    --textColorUI: white;
+    --colorUIHover: #316D75;
+}
+
+body {
+    font-family: 'Roboto', sans-serif; ;
+    background-color: var(--colorBackground);
+}
+
+.header {
+    background-color: var(--colorUI);
+    /* display: flex;
+    flex-direction: column;
+    justify-content: space-between; */
+}
+
+.title-box {
+    padding: 5px 10px;
+    color: var(--textColorUI);
+}
+
+.nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--colorUI);
+    margin-bottom: 10px;
+    border-bottom: solid white 3px;
+}
+
+.nav-elem {
+    float: left;
+    cursor: pointer;
+    display: block;
+    color: var(--textColorUI);
+    text-align: center;
+    padding: 15px 15px;
+    text-decoration: none;
+
+}
+
+.nav-elem:hover {
+    background-color: var(--colorUIHover);
+}
+
+.active {
+    background-color: var(--colorUIActive);
+}
+
+.content-columns {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}

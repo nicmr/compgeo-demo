@@ -1,9 +1,11 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, h1, nav, p)
 import Html.Events exposing (onClick)
-import Html.Attributes exposing (style)
+-- import Html.Attributes exposing (style)
+import Html.Attributes exposing (class)
+
 
 import ConvexExample
 
@@ -72,19 +74,23 @@ view model =
                 ExConvex -> ConvexExample.view model.convexModel |> Html.map mapConvexMsg
                     
                 ExTriangulation -> div [] []
-    in
-        div [ style "display" "flex"
-            , style "justify-content" "center"
-            , style "flex-direction" "row"
+        -- add a css class depending on whether the element is actively selected or not
+        (convexStateClass, triangulationStateClass) =
+            case model.active of
+                ExConvex -> (class "active", class "inactive")
+                ExTriangulation -> (class "inactive", class "active")
+               
+    in  div []
+        [ div [ class "header" ]
+            [ div [ class "title-box" ]
+                [ h1 [] [ text "Compgeo-demo" ]
+                ]
+            , nav [ class "nav" ]
+                [ div [ class "nav-elem", convexStateClass, onClick (SwitchTo ExConvex)] [ text "Convex example" ]
+                , div [ class "nav-elem", triangulationStateClass, onClick (SwitchTo ExTriangulation)] [ text "Triangulation example" ]
+                ]
             ]
-            
-            (activeView ::
-            [ div 
-                [ style "display" "flex"
-                , style "justify-content" "flex-start"
-                , style "flex-direction" "column"
-                ]
-                [ Html.button [onClick (SwitchTo ExTriangulation)] [text "Switch to ExTriangulation example"]
-                , Html.button [onClick (SwitchTo ExConvex)] [text "Switch to ExConvex example"]
-                ]
-            ])
+        , div [ class "content-columns"]
+            [ activeView ]
+        ]
+       
