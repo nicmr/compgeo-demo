@@ -18,7 +18,10 @@ jobs:
     - name: create nojekyll file
       run:
         touch ./static/.nojekyll
-    
+        
+    - name: remove static/.gitignore so generated files can be commited to deployment branch
+      run: rm ./static/.gitignore
+      
     - name: Compile elm source files
       run: elm make --output=./static/elm.js src/Main.elm
         
