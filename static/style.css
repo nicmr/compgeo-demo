@@ -61,8 +61,39 @@ body {
     background-color: var(--colorUIActive);
 }
 
-.content-columns {
+/* .content {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: row;
+} */
+
+
+
+.footer {
+    margin: 20px 10px;
+    display: flex;
+    flex-direction: column;
 }
+
+.footer-elem {
+    margin: 10px 10px;
+    color: var(--textColorUI);
+}
+
+.no-decoration {
+    text-decoration: none;
+}
+
+.fa-github {
+    color: black;
+}
+
+p {
+    color: var(--textColorUI);
+}
+
+/* button {
+    background-color: var(--colorUIActive);
+    border: 2px var(--colorUIHover);
+    color: var(--textColorUI)
+} */

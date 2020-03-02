@@ -1,0 +1,33 @@
+/* style specific to the convex example */
+
+.convex-columns {
+    /* display: flex;
+    justify-content: "center";
+    
+    justify-content: flex-start;
+    align-items: flex-start; */
+
+    display: grid;
+    grid-template-columns: 10% 10% 10% 10% 20% 20% 20%;
+}
+
+.convex-ui {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.convex-visualization {
+    grid-column-start: 5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.convex-canvas {
+    /* style "border" "10px solid rgba(0,0,0,0.1)" */
+    border: 10px solid rgba(0,0,0,0.1);
+}

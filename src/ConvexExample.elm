@@ -1,8 +1,9 @@
 module ConvexExample exposing (Model, Msg(..), init, update, view)
 
-import Html exposing (Html, div, text)
-import Html.Events exposing (onClick)
-import Html.Attributes exposing (style)
+import Html exposing (Html, div, text, button, input, p)
+import Html.Events exposing (onClick, onInput)
+import Html.Attributes exposing (class)
+import Html.Attributes as Attributes
 
 import Canvas
 import Canvas.Settings
@@ -18,23 +19,24 @@ type alias Point = (Float, Float)
 
 
 type Msg
-    = RandomPoints (List Point) | NewPoints | DrawHull
+    = RandomPoints (List Point) | NewPoints | DrawHull | UpdatePointCount String
 
 
-width = 400
-height = 400
+
 
 type alias Model =
     { count : Float
     , points : List (Float, Float)
     , draw_hull : Bool
+    , pointCount : Int
     }
 
-
+init : Model
 init = 
     { count = 0
-    , points = [(230, 350)]
+    , points = [(200, 350), (100, 250), (300, 50)]
     , draw_hull = False
+    , pointCount = 10
     }
 
 
@@ -44,35 +46,44 @@ update msg model =
         RandomPoints points ->
             ( { model | points = points, draw_hull = False}, Cmd.none )
         NewPoints ->
-            (model, Random.generate RandomPoints (randomPointList 10))
+            (model, Random.generate RandomPoints (randomPointList model.pointCount))
         DrawHull ->
             ({model | draw_hull = True}, Cmd.none)
+        UpdatePointCount newCount ->
+            ({model | pointCount = String.toInt newCount |> Maybe.withDefault 10 }, Cmd.none)
 
--- view
+-- view and view constants 
+
+width: Int
+width = 400
+height: Int
+height = 400
 
 view : Model -> Html Msg
 view model =
     div
-    [ style "display" "flex"
-    , style "justify-content" "center"
-    , style "align-items" "flex-start"
+    [ class "convex-columns"
     ]
     [ div
-        [ style "display" "flex"
-        , style "justify-content" "flex-start"
-        , style "flex-direction" "column"
+        [ class "convex-ui"
         ]
-        [ Html.button [onClick NewPoints] [text "Generate new points"]
-        , Html.button [onClick DrawHull] [text "Draw convex hull"]
+        [ p [] [text ( String.fromInt model.pointCount ++ " Points" ) ]
+        , input
+            [ Attributes.type_ "range"
+            , Attributes.min "0"
+            , Attributes.max "50"
+            , Attributes.value <| String.fromInt model.pointCount
+            , onInput UpdatePointCount
+            ] []
+        , button [onClick NewPoints] [text "Generate new points"]
+        , button [onClick DrawHull] [text "Draw convex hull"]
         ]
     , div
-        [ style "display" "flex"
-        , style "justify-content" "center"
-        , style "align-items" "flex-start"
+        [ class "convex-visualization"
         ]
         [ Canvas.toHtml
             ( width, height )
-            [ style "border" "10px solid rgba(0,0,0,0.1)" ]
+            [ class "convex-canvas"]
             [ clearScreen
             , render model.points model.draw_hull
             ]
@@ -85,8 +96,7 @@ view model =
 render: List Point -> Bool -> Canvas.Renderable
 render points draw_hull =
     let
-        size = width / 3
-        circles = List.map (\(x,y) -> Canvas.circle (x,y) (size/50) ) points
+        circles = List.map (\(x,y) -> Canvas.circle (x,y) (toFloat width / 150) ) points
     in
         if draw_hull then
             List.map (\(x,y) -> vec2 x y) points
@@ -111,14 +121,19 @@ vecsToPath vecs =
         [x] -> Just <| Canvas.path (getX x, getY x) []
         (x::xs) -> Just <| Canvas.path (getX x, getY x) <| List.map(\a -> Canvas.lineTo (getX a, getY a)) xs
 
+-- clears the canvas by coloring everything white
+clearScreen : Canvas.Renderable
+clearScreen =
+    Canvas.shapes [ Canvas.Settings.fill Color.white ] [ Canvas.rect ( 0, 0 ) (toFloat width) (toFloat height) ]
+
 
 -- random point generators
 
 randomPoint: Random.Generator Point
 randomPoint =
     let
-        max_w = width-1
-        max_h = height-1
+        max_w = toFloat (width-1)
+        max_h = toFloat (height-1)
     in
       Random.map2(\x y -> (x, y)) (Random.float 1 max_w) (Random.float 1 max_h)
 
@@ -126,8 +141,3 @@ randomPoint =
 randomPointList : Int -> Random.Generator (List Point)
 randomPointList length =
     Random.list length randomPoint
-
-
-
-clearScreen =
-    Canvas.shapes [ Canvas.Settings.fill Color.white ] [ Canvas.rect ( 0, 0 ) width height ]
